@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Financial Twin: see the whole treatment bill first</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08111c;--panel:#0f1d2e;--panel2:#152740;--ink:#e8f1f5;--mute:#8da3b5;--line:#22374f;
+  --teal:#2fd6c0;--coral:#ff6b6b;--amber:#ffc24a;--sky:#6db4ff;
+  --paper:#eef3f0;--pink:#14202b;--hl:#ffe9e6;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#eaf1f4;--panel:#fff;--panel2:#e3edf3;--ink:#0d1b2a;--mute:#51677a;--line:#c9d7e0;--teal:#0a9d8b;--coral:#d63f3f;--amber:#b87800;--sky:#1c6fc4}}
+:root[data-theme="dark"]{--bg:#08111c}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+h1,h2,h3{margin:0;line-height:1.05;letter-spacing:-.02em}
+.mono{font-family:'DM Mono',ui-monospace,monospace}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+
+/* hero */
+.hero{padding:56px 0 40px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.tag{display:inline-block;font-size:13px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:5px 13px;margin-bottom:22px}
+h1{font-size:clamp(40px,7vw,78px);font-weight:800}
+h1 em{font-style:normal;color:var(--teal)}
+.lead{font-size:19px;color:var(--mute);max-width:30em;margin:22px 0 28px}
+.btn{display:inline-block;background:var(--teal);color:#04241f;font-weight:600;padding:13px 22px;border-radius:12px;text-decoration:none;border:0;font:inherit;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);margin-left:8px}
+
+/* receipt: signature element */
+.receipt{background:var(--paper);color:#14202b;padding:26px 24px 34px;font-family:'DM Mono',monospace;font-size:14px;position:relative;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),96% 100%,92% calc(100% - 12px),88% 100%,84% calc(100% - 12px),80% 100%,76% calc(100% - 12px),72% 100%,68% calc(100% - 12px),64% 100%,60% calc(100% - 12px),56% 100%,52% calc(100% - 12px),48% 100%,44% calc(100% - 12px),40% 100%,36% calc(100% - 12px),32% 100%,28% calc(100% - 12px),24% 100%,20% calc(100% - 12px),16% 100%,12% calc(100% - 12px),8% 100%,4% calc(100% - 12px),0 100%);
+  transform:rotate(1.2deg);box-shadow:0 30px 60px -20px #000a}
+.receipt h3{font:800 20px 'Bricolage Grotesque';letter-spacing:0;margin-bottom:2px}
+.receipt .sub{color:#5d6d79;font-size:12px;margin-bottom:14px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed #b4c2bf}
+.row.hid{background:var(--hl);margin:0 -24px;padding:6px 24px;color:#9b1c1c;font-weight:500}
+.row.hid small{display:block;font-size:11px;font-weight:400;color:#b24a4a}
+.row.total{border-bottom:0;border-top:2px solid #14202b;margin-top:8px;padding-top:12px;font-size:18px;font-weight:500}
+.row.minus{color:#0b7d6f}
+.pl{margin-top:10px;font-size:12px;color:#5d6d79}
+.hero .receipt .row{opacity:0;transform:translateY(6px);animation:pr .5s forwards}
+.hero .receipt .row:nth-of-type(1){animation-delay:.3s}
+.hero .receipt .row:nth-of-type(2){animation-delay:1s}
+.hero .receipt .row:nth-of-type(3){animation-delay:1.6s}
+.hero .receipt .row:nth-of-type(4){animation-delay:2.2s}
+.hero .receipt .row:nth-of-type(5){animation-delay:3s}
+@keyframes pr{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.hero .receipt .row{animation:none;opacity:1;transform:none}html{scroll-behavior:auto}}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 70px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}
+.stat b{display:block;font-size:44px;font-weight:800;letter-spacing:-.03em}
+.stat span{color:var(--mute);font-size:14px}
+.stat small{display:block;margin-top:8px;font-size:11px;color:var(--mute);opacity:.8}
+
+/* simulator */
+section{padding:20px 0 60px}
+h2{font-size:clamp(30px,4.6vw,48px);font-weight:800;margin-bottom:10px}
+.sec-lead{color:var(--mute);max-width:36em;margin:0 0 30px}
+.sim{display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px}
+.ctrl{margin-bottom:20px}
+.ctrl label{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);margin-bottom:8px}
+.ctrl label b{color:var(--ink);font-weight:600}
+select{width:100%;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit}
+input[type=range]{width:100%;accent-color:var(--teal)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
+.seg button{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 4px;font:inherit;font-size:14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--teal);color:#04241f;border-color:var(--teal);font-weight:600}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.out .receipt{transform:none;grid-row:span 2}
+.range{font-size:34px;font-weight:800;letter-spacing:-.02em}
+.range small{display:block;font-size:13px;font-weight:400;color:var(--mute);letter-spacing:0;margin-top:2px}
+.meter{height:12px;border-radius:9px;background:linear-gradient(90deg,var(--teal),var(--amber),var(--coral));position:relative;margin:16px 0 8px}
+.meter i{position:absolute;top:-5px;width:6px;height:22px;background:var(--ink);border-radius:4px;transform:translateX(-3px);transition:left .4s}
+.lvl{font-weight:600}
+.drv{margin-top:14px}
+.drv div{display:grid;grid-template-columns:92px 1fr 38px;gap:8px;align-items:center;font-size:13px;margin:7px 0;color:var(--mute)}
+.bar{height:8px;background:var(--panel2);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;transition:width .4s}
+.why{font-size:14px;margin-top:14px;padding:12px 14px;background:var(--panel2);border-radius:12px;color:var(--ink)}
+.why small{display:block;color:var(--mute);margin-top:4px;font-size:11px}
+
+/* scenarios */
+.sc{margin-top:22px}
+.sc h3,.fac h3{font-size:22px;margin-bottom:16px}
+.sr{display:grid;grid-template-columns:120px 1fr 90px;gap:12px;align-items:center;margin:12px 0;font-size:14px}
+.stack{display:flex;height:26px;border-radius:8px;overflow:hidden;background:var(--panel2)}
+.stack i{display:block;transition:width .4s}
+.sr .v{text-align:right;font-weight:600}
+.sv{font-size:12px;color:var(--teal)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-top:10px}
+.legend s{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;text-decoration:none}
+.facs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.f{background:var(--panel2);border-radius:14px;padding:16px;border:1px solid transparent}
+.f.best{border-color:var(--teal)}
+.f b{display:block;font-size:24px;margin:6px 0 2px;font-weight:800}
+.f span{font-size:13px;color:var(--mute)}
+.f em{font-style:normal;font-size:12px;color:var(--teal)}
+.scheme{margin-top:14px;display:flex;gap:14px;align-items:center;background:var(--panel2);padding:16px;border-radius:14px;font-size:14px}
+.scheme b{font-size:26px;color:var(--amber);white-space:nowrap}
+footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--mute);font-size:14px}
+footer b{color:var(--ink)}
+.fine{font-size:12px;margin-top:14px}
+@media (max-width:860px){
+  .hero,.sim,.out{grid-template-columns:1fr}
+  .stats,.facs{grid-template-columns:1fr}
+  .receipt{transform:none}
+  .sr{grid-template-columns:1fr 80px}.sr .stack{grid-column:1/-1;order:3}
+  .drv div{grid-template-columns:80px 1fr 36px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div>
+    <span class="tag">VJH 2k26 · Healthcare · PS2</span>
+    <h1>The bill says ₹42,000. <em>The journey costs more.</em></h1>
+    <p class="lead">Financial Twin shows a family the full cost of a treatment before it starts: hospital, travel, stay, lost wages, and what insurance leaves uncovered.</p>
+    <a class="btn" href="#sim">Try the twin</a><a class="btn ghost" href="#why">Why it's different</a>
+  </div>
+  <div class="receipt" aria-label="Example: Ramesh's treatment, planned vs actual">
+    <h3>Ramesh's knee surgery</h3>
+    <div class="sub">3 days · 100 km from home</div>
+    <div class="row"><span>Hospital bill</span><span>₹42,000</span></div>
+    <div class="row hid"><span>Travel, 2 people<small>missed by most families</small></span><span>+₹2,500</span></div>
+    <div class="row hid"><span>Family lodging<small>missed by most families</small></span><span>+₹3,000</span></div>
+    <div class="row hid"><span>Caregiver's lost wages<small>missed by most families</small></span><span>+₹3,000</span></div>
+    <div class="row total"><span>Real cost</span><span>₹50,500</span></div>
+    <div class="pl">Illustrative example. He planned for ₹42,000.</div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><b style="color:var(--coral)">~47%</b><span>of India's health spending is paid out of pocket</span><small>NHA 2019-20</small></div>
+  <div class="stat"><b style="color:var(--sky)">18%</b><span>is the global average out-of-pocket share</span><small>World Bank 2019</small></div>
+  <div class="stat"><b style="color:var(--amber)">₹5 L</b><span>PM-JAY family cover per year that many never claim</span><small>Ayushman Bharat</small></div>
+</div>
+
+<section id="sim">
+  <h2>Build your twin</h2>
+  <p class="sec-lead">Change anything on the left. The receipt, risk level and comparisons update instantly. No login, no medical records.</p>
+  <div class="sim">
+    <div class="card" role="form" aria-label="Treatment details">
+      <div class="ctrl"><label for="cond">Condition</label>
+        <select id="cond">
+          <option value="0">Knee replacement</option>
+          <option value="1">Heart angioplasty</option>
+          <option value="2">C-section delivery</option>
+          <option value="3">Dengue admission</option>
+          <option value="4">Cataract surgery</option>
+        </select></div>
+      <div class="ctrl"><label>Facility type</label>
+        <div class="seg" id="fac"><button data-v="0" aria-pressed="false">Government</button><button data-v="1" aria-pressed="false">Trust</button><button data-v="2" aria-pressed="true">Private</button></div></div>
+      <div class="ctrl"><label for="days">Hospital stay <b id="dv"></b></label><input id="days" type="range" min="1" max="10" value="3"></div>
+      <div class="ctrl"><label for="km">Distance from home <b id="kv"></b></label><input id="km" type="range" min="0" max="400" step="10" value="100"></div>
+      <div class="ctrl"><label>Caregivers travelling</label>
+        <div class="seg" id="cg"><button data-v="0" aria-pressed="false">0</button><button data-v="1" aria-pressed="true">1</button><button data-v="2" aria-pressed="false">2</button></div></div>
+      <div class="ctrl" style="margin-bottom:0"><label for="ins">Insurance cover <b id="iv"></b></label><input id="ins" type="range" min="0" max="500000" step="5000" value="20000"></div>
+    </div>
+
+    <div>
+      <div class="out">
+        <div class="receipt" id="rc" aria-live="polite"></div>
+        <div class="card">
+          <div class="range" id="rng"></div>
+          <div class="meter" aria-hidden="true"><i id="mk"></i></div>
+          <div>Out-of-pocket exposure: <span class="lvl" id="lvl"></span></div>
+          <div class="drv" id="drv"></div>
+        </div>
+        <div class="card">
+          <b>Why is my cost high?</b>
+          <div class="why" id="why"></div>
+        </div>
+      </div>
+      <div class="card sc">
+        <h3>What if I choose differently?</h3>
+        <div id="scn"></div>
+        <div class="legend"><span><s style="background:var(--teal)"></s>Hospital, after insurance</span><span><s style="background:var(--amber)"></s>Travel</span><span><s style="background:var(--coral)"></s>Lodging</span><span><s style="background:var(--sky)"></s>Lost wages</span></div>
+      </div>
+      <div class="card fac" style="margin-top:22px">
+        <h3>Where to go, and what you'd pay</h3>
+        <div class="facs" id="facs"></div>
+        <div class="scheme"><b>₹5 L</b><span>PM-JAY gives eligible families up to ₹5 lakh a year at empanelled hospitals. Ask at an Ayushman Bharat desk before you pay.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <h2>Why it's different</h2>
+  <p class="sec-lead">Existing tools show one hospital charge. Financial Twin shows the whole journey, and explains it.</p>
+  <div class="out" style="grid-template-columns:repeat(2,1fr)">
+    <div class="card"><b style="color:var(--coral)">Hidden cost detector</b><p style="color:var(--mute);margin:8px 0 0">Flags travel, lodging and lost wages that families forget to plan for.</p></div>
+    <div class="card"><b style="color:var(--teal)">What-if simulator</b><p style="color:var(--mute);margin:8px 0 0">Change one factor and watch the out-of-pocket cost move live.</p></div>
+    <div class="card"><b style="color:var(--amber)">Explainable drivers</b><p style="color:var(--mute);margin:8px 0 0">Shows which part of the cost matters most, in percent.</p></div>
+    <div class="card"><b style="color:var(--sky)">Numbers first, AI second</b><p style="color:var(--mute);margin:8px 0 0">Calculations run first. AI only turns them into plain language. It is not a chatbot.</p></div>
+  </div>
+</section>
+
+<footer>
+  <b>Financial Twin</b> · Know the burden. Choose the lighter path.<br>
+  Team Code Red · VJH 2k26 · Healthcare PS2
+  <div class="fine">Prototype uses simulated estimates for demonstration. Real costs and insurance terms vary. Planned data: NSS 75th round, PM-JAY package rates, CGHS rates, NPPA drug prices, ABDM facility registry.</div>
+</footer>
+</div>
+
+<script>
+const C=[{p:30000,d:4000},{p:150000,d:8000},{p:55000,d:3500},{p:6000,d:3500},{p:25000,d:2000}];
+const FM=[.25,.6,1], FN=['Government medical college','Trust hospital','Private hospital'];
+const s={c:0,f:2,days:3,km:100,cg:1,ins:20000};
+const $=id=>document.getElementById(id);
+const inr=n=>'₹'+(Math.round(n/100)*100).toLocaleString('en-IN');
+function calc(o){
+  const gross=(C[o.c].p+C[o.c].d*o.days)*FM[o.f];
+  const covered=Math.min(gross,o.ins), med=gross-covered;
+  const travel=o.km*12*(1+o.cg);
+  const stay=o.km>30?o.days*1000:0;
+  const wage=o.cg*o.days*1000;
+  return{gross,covered,med,travel,stay,wage,hidden:travel+stay+wage,oop:med+travel+stay+wage};
+}
+function render(){
+  const r=calc(s);
+  $('dv').textContent=s.days+(s.days>1?' days':' day');
+  $('kv').textContent=s.km+' km';
+  $('iv').textContent=inr(s.ins);
+  let h=`<h3>Your twin</h3><div class="sub">${$('cond').selectedOptions[0].text} · ${s.days}d · ${s.km} km</div>
+  <div class="row"><span>Hospital bill</span><span>${inr(r.gross)}</span></div>
+  <div class="row minus"><span>Insurance pays</span><span>−${inr(r.covered)}</span></div>
+  <div class="row hid"><span>Travel<small>hidden</small></span><span>+${inr(r.travel)}</span></div>
+  <div class="row hid"><span>Lodging<small>hidden</small></span><span>+${inr(r.stay)}</span></div>
+  <div class="row hid"><span>Lost wages<small>hidden</small></span><span>+${inr(r.wage)}</span></div>
+  <div class="row total"><span>You pay</span><span>${inr(r.oop)}</span></div>
+  <div class="pl">${r.gross>r.ins&&r.ins>0?'Insurance gap: '+inr(r.med)+' of the hospital bill is uncovered.':r.ins===0?'No insurance entered.':'Hospital bill fully covered. Hidden costs still apply.'}</div>`;
+  $('rc').innerHTML=h;
+  const lo=r.oop*.88,hi=r.oop*1.12;
+  $('rng').innerHTML=`${inr(lo)} to ${inr(hi)}<small>Likely out-of-pocket range</small>`;
+  const L=r.oop<15000?['Low','var(--teal)']:r.oop<50000?['Moderate','var(--amber)']:['High','var(--coral)'];
+  $('lvl').textContent=L[0];$('lvl').style.color=L[1];
+  $('mk').style.left=Math.min(100,r.oop/1000)+'%';
+  const parts=[['Hospital',r.med,'var(--teal)'],['Travel',r.travel,'var(--amber)'],['Lodging',r.stay,'var(--coral)'],['Lost wages',r.wage,'var(--sky)']];
+  const tot=r.oop||1;
+  $('drv').innerHTML=parts.map(p=>{const pc=Math.round(p[1]/tot*100);return`<div><span>${p[0]}</span><span class="bar"><i style="width:${pc}%;background:${p[2]}"></i></span><span>${pc}%</span></div>`}).join('');
+  const top=[...parts].sort((a,b)=>b[1]-a[1])[0];
+  $('why').innerHTML=`${top[0]} is the biggest part of your cost at ${Math.round(top[1]/tot*100)}%. ${r.hidden>0?'Hidden costs add '+inr(r.hidden)+' on top of the hospital bill.':'You have no hidden travel costs here.'} ${s.f===2?'A trust or government facility could cut the hospital part.':''}<small>Plain-language explanation, generated from the numbers above.</small>`;
+  // scenarios
+  const sc=[['A: Current',s],['B: Cheaper facility',{...s,f:Math.max(0,s.f-1)}],['C: One day less',{...s,days:Math.max(1,s.days-1)}]];
+  const res=sc.map(x=>calc(x[1])),mx=Math.max(...res.map(x=>x.oop),1);
+  $('scn').innerHTML=sc.map((x,i)=>{const q=res[i],w=v=>(v/mx*100)+'%',sv=i?res[0].oop-q.oop:0;
+    return`<div class="sr"><span>${x[0]}</span><div class="stack"><i style="width:${w(q.med)};background:var(--teal)"></i><i style="width:${w(q.travel)};background:var(--amber)"></i><i style="width:${w(q.stay)};background:var(--coral)"></i><i style="width:${w(q.wage)};background:var(--sky)"></i></div><span class="v">${inr(q.oop)}<div class="sv">${i?(sv>0?'saves '+inr(sv):'no change'):'&nbsp;'}</div></span></div>`}).join('');
+  // facilities
+  const fr=[2,1,0].map(f=>{const o={...s,f,km:Math.round(s.km*[.4,.7,1][f]/10)*10};return{f,o,r:calc(o)}});
+  const best=Math.min(...fr.map(x=>x.r.oop));
+  $('facs').innerHTML=fr.map(x=>`<div class="f ${x.r.oop===best?'best':''}"><span>${FN[x.f]}</span><b>${inr(x.r.oop)}</b><span>about ${x.o.km} km away</span>${x.r.oop===best?'<br><em>Lowest burden</em>':''}</div>`).join('');
+}
+$('cond').onchange=e=>{s.c=+e.target.value;render()};
+['days','km','ins'].forEach(k=>$(k).oninput=e=>{s[k]=+e.target.value;render()});
+[['fac','f'],['cg','cg']].forEach(([id,k])=>$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  s[k]=+b.dataset.v;$(id).querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()}));
+render();
+</script>
+</body>
+</html>
